@@ -1,0 +1,12 @@
+name: MapTP
+version: ${project.version}
+main: me.ssvt.maptp.MapTP
+api-version: 1.13
+authors: [SSVT]
+description: First test run of map teleport funcionality.
+depend: [GriefPrevention]
+commands:
+  tpspawn:
+    description: Use this to teleport to spawn.
+    usage: /<command>
+    aliases: [teleportspawn, return]
