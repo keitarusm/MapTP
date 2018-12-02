@@ -5,6 +5,7 @@ import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,13 +40,21 @@ public class MapTeleport implements Listener {
                     DataStore dataS = plugin.dataStore;
                     PlayerData pd = dataS.getPlayerData(player.getUniqueId());
                     Vector<Claim> pClaims = pd.getClaims();
-                    player.sendMessage(String.valueOf(pClaims.size()));
+                    if (pClaims.size() == 0) return; //Make sure the player has some claims before trying to TP.
                     Location tpSpot = claimCenter(pClaims.get(0), player);
                     @SuppressWarnings("deprecation")
                     MapView mapView = Bukkit.getMap((short)mapMeta.getMapId());
+                    MapView.Scale mapScale = mapView.getScale();
                     Location mapCenter = new Location(mapView.getWorld(), mapView.getCenterX(), 0.0, mapView.getCenterZ());
                     Claim tpClaim = closestClaim(mapCenter, pClaims, player);
-                    player.teleport(claimCenter(tpClaim, player));
+                    Location claimCenter = claimCenter(tpClaim, player);
+                    //Before we teleport the player, we want to check and see if distance between
+                    //the claim center and the map center is small enough to be on the map.
+                    if (claimOnMap(claimCenter, mapView, player)){
+                        player.teleport(claimCenter);
+                    } else {
+                        player.sendMessage(ChatColor.RED + "There's no claim on that map.");
+                    }
                 } else {
                     player.sendMessage("That's an empty map. Why is it in a frame...");
                 }
@@ -85,5 +94,15 @@ public class MapTeleport implements Listener {
         }
 
         return nearestClaim;
+    }
+
+    private boolean claimOnMap(Location claimCenter, MapView map, Player player){
+        Location mapCenter = new Location(map.getWorld(), map.getCenterX(), 0.0, map.getCenterZ());
+        @SuppressWarnings("deprecation") // Deprecated for magic number. Not avoidable with maps.
+        byte mapScale = map.getScale().getValue();
+        double mapEdge = 64.0 * (Math.pow(2, mapScale));
+        double xOffset = claimCenter.getX() - mapCenter.getX();
+        double zOffset = claimCenter.getZ() - mapCenter.getZ();
+        return xOffset*xOffset < mapEdge*mapEdge && zOffset*zOffset < mapEdge*mapEdge;
     }
 }

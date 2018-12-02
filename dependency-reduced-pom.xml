@@ -4,7 +4,7 @@
   <groupId>me.ssvt</groupId>
   <artifactId>MapTP</artifactId>
   <name>MapTP</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <description>First test run of map teleport funcionality.</description>
   <build>
     <defaultGoal>clean package</defaultGoal>
