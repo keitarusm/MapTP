@@ -46,18 +46,11 @@ public class MapTeleport implements Listener {
                     Location mapCenter = new Location(mapView.getWorld(), mapView.getCenterX(), 0.0, mapView.getCenterZ());
                     Claim tpClaim = closestClaim(mapCenter, pClaims, player);
                     player.teleport(claimCenter(tpClaim, player));
-                    //player.teleport(new Location(mapView.getWorld(), mapView.getCenterX(), 100.0, mapView.getCenterZ()));
                 } else {
                     player.sendMessage("That's an empty map. Why is it in a frame...");
                 }
-
-
-//                player.sendMessage(ChatColor.AQUA + "You've clicked on an item frame with a map in.");
-//                player.teleport(player.getWorld().getSpawnLocation());
             }
-//            player.teleport(player.getWorld().getSpawnLocation());
         }
-        player.sendMessage("You just clicked on this: " + event.getRightClicked());
     }
 
     private Location claimCenter(Claim claim, Player player){
